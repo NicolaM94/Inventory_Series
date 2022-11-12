@@ -1,17 +1,34 @@
 package main
 
-var BASE map[int]int
+import "fmt"
 
-func inventorySteps(lastStep int) {
+var BASE map[int]int = make(map[int]int)
 
-	for i:=0;i<=lastStep;i++ {
-		BASE.
+func countMapOccurencies(n int) (out int) {
+	for k, v := range BASE {
+		if k == n {
+			out += n
+		}
+		if BASE[k] == n {
+			out += BASE[v]
+		}
 	}
-
+	return
 }
 
-func main () {
+func main() {
 
-	BASE[0] = 1
+	BASE[0] = 0
+
+	//T(1)
+	BASE[0] = countMapOccurencies(0)
+	BASE[1] = countMapOccurencies(1)
+
+	fmt.Println(BASE)
+
+	//T(2)
+	BASE[0] = countMapOccurencies(0)
+	BASE[1] = countMapOccurencies(1)
+	BASE[2] = countMapOccurencies(2)
 
 }
