@@ -1,12 +1,25 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	
+)
 
-var KEYS []int
-var VALUES []int
 
-func contains (number int, array []int) (out int) {
-	for _,v := range array {
+func countMap (number int,data map[int]int) int {
+	for k,v := range data {
+		if k == number {
+			if v == 0 || k == 0 {
+				return 1
+			}
+			return v
+		}
+	}
+	return 0
+}
+
+func countNewBase (number int, data []int) (out int) {
+	for _,v := range data {
 		if v == number {
 			out++
 		}
@@ -15,25 +28,50 @@ func contains (number int, array []int) (out int) {
 }
 
 
-func main () {
-	
-	var base []int = []int{0}
-	var counter int = 0
-	var limit int = 5
-	var newBase = base
+func inventorySeries (limit int) map[int]int {
+
+	var base map[int]int = make(map[int]int)
+	var counter int
+	var newBase []int
 
 	for counter <= limit {
-		var temp int = contains(counter,base)
-		newBase = append(newBase, contains(counter,base))
-		if temp == 0 {
-			base = newBase
+
+		countedMap := countMap(counter,base)
+		fmt.Println("CountedMap: ",countedMap)
+		//time.Sleep(5* time.Second)
+		countedNewBase := countNewBase(counter,newBase)
+		fmt.Println("CountedNewBase: ",countedNewBase)
+		//time.Sleep(5*time.Second)
+
+		newBase = append(newBase,countedMap+countedNewBase)
+		fmt.Println(newBase)
+		//time.Sleep(5*time.Second)
+		
+		if newBase[len(newBase)-1] == 0 {
+			for i,_ := range newBase {
+				base[i] = countNewBase(base[i],newBase)
+			}
 			counter = 0
-			newBase = []int{}
-			fmt.Println(base)
+			newBase = newBase[:0]
+			fmt.Println(base,"\n")
 			continue
 		} else {
-			counter++
+		fmt.Println(base,"\n")
+		counter++
 		}
 	}
+	return base
+}
+
+
+
+
+
+
+func main () {
+
+	fmt.Println(inventorySeries(2))
+	
+	
 }
 
