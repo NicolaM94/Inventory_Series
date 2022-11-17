@@ -2,76 +2,52 @@ package main
 
 import (
 	"fmt"
-	
 )
 
 
-func countMap (number int,data map[int]int) int {
-	for k,v := range data {
-		if k == number {
-			if v == 0 || k == 0 {
-				return 1
-			}
-			return v
-		}
-	}
-	return 0
-}
 
-func countNewBase (number int, data []int) (out int) {
-	for _,v := range data {
-		if v == number {
+func countArray (target int, array []int) (out int) {
+	for _,v := range array {
+		if v == target {
 			out++
 		}
 	}
 	return
 }
 
+func inventorySteps (limit int) [][]int {
 
-func inventorySeries (limit int) map[int]int {
+	var outer [][]int
 
-	var base map[int]int = make(map[int]int)
+	var round int = limit
 	var counter int
-	var newBase []int
+	var base []int
+	var storage []int
 
-	for counter <= limit {
+	for round > 0 {
+		fmt.Printf("Counter: %v\n",counter)
+		fmt.Printf("Number of %v in base: %v\n",counter,countArray(counter,base))
+		fmt.Printf("Number of %v in storage: %v\n",counter,countArray(counter,storage))
+		ans := countArray(counter,base) + countArray(counter,storage)
+		base = append(base, ans)
 
-		countedMap := countMap(counter,base)
-		fmt.Println("CountedMap: ",countedMap)
-		//time.Sleep(5* time.Second)
-		countedNewBase := countNewBase(counter,newBase)
-		fmt.Println("CountedNewBase: ",countedNewBase)
-		//time.Sleep(5*time.Second)
-
-		newBase = append(newBase,countedMap+countedNewBase)
-		fmt.Println(newBase)
-		//time.Sleep(5*time.Second)
-		
-		if newBase[len(newBase)-1] == 0 {
-			for i,_ := range newBase {
-				base[i] = countNewBase(base[i],newBase)
-			}
-			counter = 0
-			newBase = newBase[:0]
-			fmt.Println(base,"\n")
-			continue
+		if ans != 0 {
+			counter++
 		} else {
-		fmt.Println(base,"\n")
-		counter++
+			storage = append(storage, base...)
+			outer = append(outer, base)
+
+			counter = 0
+			base = []int{}
+			round--
+			
 		}
 	}
-	return base
-}
-
-
-
-
+	return outer
+} 
 
 
 func main () {
+	fmt.Println(inventorySteps(10))
 
-	fmt.Println(inventorySeries(2))
-	
-	
 }
-
