@@ -15,39 +15,41 @@ func countArray (target int, array []int) (out int) {
 	return
 }
 
+func sumArray(array []int) (out int) {
+	for _,v:=range array {
+		out+=v
+	}
+	return
+}
+
 func inventorySteps (limit int) [][]int {
 
 	var outer [][]int
-
-	var round int = limit
 	var counter int
 	var base []int
 	var storage []int
 
-	for round > 0 {
-		fmt.Printf("Counter: %v\n",counter)
-		fmt.Printf("Number of %v in base: %v\n",counter,countArray(counter,base))
-		fmt.Printf("Number of %v in storage: %v\n",counter,countArray(counter,storage))
+	for limit > 0 {
 		ans := countArray(counter,base) + countArray(counter,storage)
 		base = append(base, ans)
-
 		if ans != 0 {
 			counter++
-		} else {
-			storage = append(storage, base...)
-			outer = append(outer, base)
-
-			counter = 0
-			base = []int{}
-			round--
-			
+			continue
 		}
+		storage = append(storage, base...)
+		outer = append(outer, base)
+
+		counter = 0
+		base = []int{}
+		limit--
 	}
 	return outer
 } 
 
 
 func main () {
-	fmt.Println(inventorySteps(10))
-
+	var result [][]int = inventorySteps(50)
+	for _,v:=range result {
+		fmt.Printf("%v -> Sum: %v\n",v,sumArray(v))
+	}
 }
