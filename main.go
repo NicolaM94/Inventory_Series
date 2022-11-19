@@ -1,26 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"inventory_series/utilities"
+	"log"
+	"os"
 )
 
-
-
-func countArray (target int, array []int) (out int) {
-	for _,v := range array {
-		if v == target {
-			out++
-		}
-	}
-	return
-}
-
-func sumArray(array []int) (out int) {
-	for _,v:=range array {
-		out+=v
-	}
-	return
-}
 
 func inventorySteps (limit int) [][]int {
 
@@ -30,7 +15,7 @@ func inventorySteps (limit int) [][]int {
 	var storage []int
 
 	for limit > 0 {
-		ans := countArray(counter,base) + countArray(counter,storage)
+		ans := utilities.CountArray(counter,base) + utilities.CountArray(counter,storage)
 		base = append(base, ans)
 		if ans != 0 {
 			counter++
@@ -38,7 +23,6 @@ func inventorySteps (limit int) [][]int {
 		}
 		storage = append(storage, base...)
 		outer = append(outer, base)
-
 		counter = 0
 		base = []int{}
 		limit--
@@ -48,8 +32,24 @@ func inventorySteps (limit int) [][]int {
 
 
 func main () {
-	var result [][]int = inventorySteps(50)
-	for _,v:=range result {
-		fmt.Printf("%v -> Sum: %v\n",v,sumArray(v))
+	var result [][]int = inventorySteps(500)
+	file,err := os.Create("/home/nicola/Desktop/tet.txt")
+	if err != nil {
+		panic("Cannot open target file")
 	}
+
+	for _,v:=range result {
+		//fmt.Printf("Writing %v",utilities.StringArray(v))
+		_,err := file.Write(utilities.StringArray(v))
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	closeErr := file.Close()
+
+	if closeErr != nil {
+		log.Fatal(closeErr)
+	}
+	
 }
