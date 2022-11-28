@@ -1,9 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"inventory_series/utilities"
-	"log"
+
 	"os"
+
+	"gonum.org/v1/plot"
+
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
 
@@ -31,25 +38,42 @@ func inventorySteps (limit int) [][]int {
 } 
 
 
+func generatePoints (arrayOfPoints []int) plotter.XYs {
+	pts := make(plotter.XYs, len(arrayOfPoints))
+	for i:= range pts {
+		pts[i].X = float64(i)
+		pts[i].Y = float64(arrayOfPoints[i])
+	}
+	return pts
+}
+
+
 func main () {
 	var result [][]int = inventorySteps(500)
-	file,err := os.Create("/home/nicola/Desktop/tet.txt")
-	if err != nil {
-		panic("Cannot open target file")
-	}
 
+	//Writing down the result
+	file,err := os.Create("inventory.txt")
+	utilities.CheckErr(err)
 	for _,v:=range result {
-		//fmt.Printf("Writing %v",utilities.StringArray(v))
 		_,err := file.Write(utilities.StringArray(v))
-
-		if err != nil {
-			log.Fatal(err)
-		}
+		utilities.CheckErr(err)
 	}
 	closeErr := file.Close()
+	utilities.CheckErr(closeErr)
 
-	if closeErr != nil {
-		log.Fatal(closeErr)
+	//Plotting the result
+	p := plot.New()
+	p.Title.Text = "Inventory sequence"
+	p.X.Label.Text = "X"
+	p.Y.Label.Text = "Y"
+
+	for i,v := range result {
+		plotError := plotutil.AddLinePoints(p,fmt.Sprint(i),generatePoints(v),plotutil.Color(50))
+		utilities.CheckErr(plotError)
 	}
+	p.Save(10*vg.Inch,10*vg.Inch,"points.png")
+
+
+
 	
 }

@@ -1,6 +1,9 @@
 package utilities
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 
 func CountArray (target int, array []int) (out int) {
@@ -31,4 +34,10 @@ func StringArray (array []int) []byte {
 	}
 	out += "\n"
 	return []byte(out)
+}
+
+func CheckErr (err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
